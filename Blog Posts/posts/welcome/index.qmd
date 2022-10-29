@@ -1,12 +1,66 @@
 ---
-title: "Welcome To My Blog"
-author: "Tristan O'Malley"
-date: "2022-10-26"
-categories: [news]
+title: "Introduction to Stable Diffusion"
+author: "Vishwas Pai"
+date: "2022-10-29"
+categories: [CV]
+image : stable_diffusion.png
 ---
 
-This is the first post in a Quarto blog. Welcome!
 
-![](thumbnail.jpg)
+![Image Credit [link](https://www.jousefmurad.com/content/images/2022/10/316b0d3b-591e-455f-b721-beaba73d0a0a_2400x1100.png)](stable_diffusion.png)
 
-Since this post doesn't specify an explicit `image`, the first image in the post will be used in the listing page of posts.
+In this blog we will go through how **stable diffusion** models work.This Blog is mainly Summary of the Fastai [video](https://www.youtube.com/watch?v=_7rMfsA24Ls&t=1s). We will be using [diffusers](https://github.com/huggingface/diffusers) library by huggingface.
+
+
+Lets understand the intuition of these. 
+
+Lets say we have alot of images. We will add random gaussian noise to the images. Now we have images with `somewhat` noise. 
+Lets take these images and train a model which extracts the noise we have added.
+
+Now we have model which given noisy image extract noise and we can have image generated.
+
+![](diffusion_arch.png)
+
+As our model knows to extract `somewhat` noise , so given so pure noise we can iterate for X steps to the get some tangable output. 
+
+![Image Credit [link](https://huggingface.co/blog/assets/78_annotated-diffusion/thumbnail.png)](noisy2proper.png)
+
+why not run it only once?
+
+![Output for single noise extraction](first_step_output.png)
+
+As you can see from above example.In first iteration it may extract some noise. Again it will be given to extract. This when we do for X steps we get the final output. 
+
+
+
+Now instead of random image generated, can we guide the model to generate specfic images? Yes. 
+
+In the above model, along with noisy image if we also give embedding of text as input to train. The model will understand what to generate. This method is called as **Classifier-Free Guidance**. 
+
+
+Lets see quick example using huggingface pipeline
+
+```
+
+pipe2 = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", revision="fp16", torch_dtype=torch.float16).to("cuda")
+
+prompt = "a photograph of an astronaut riding a horse"
+
+pipe2(prompt).images[0]
+```
+
+![](astronot.png)
+ 
+
+Generally images are 3d with alot of values. A small 512*512 image will have 786432 values. But from information persepective alot of values don't add value. 
+So we use **VAE**. This model compressed image into small dimension, which gives only important value which adds value. This will reduce our inputs which will reduce the computation.
+
+We may need to use de compression during output to get proper image.
+
+**What are the blocks till now we saw?**
+
+1. Model which extracts noise and outputs less noise image
+2. Model which embeds the text into embedding.
+3. Model which compresses and de-compressed images. ( output of these compression models are called as **latents**)
+
+![](sd_architecure.png)
