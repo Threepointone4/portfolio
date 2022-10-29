@@ -7,8 +7,8 @@
     "text": "This is a post with executable code."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
+    "objectID": "posts/Introduction_to_Stable_Diffusion/index.html",
+    "href": "posts/Introduction_to_Stable_Diffusion/index.html",
     "title": "Introduction to Stable Diffusion",
     "section": "",
     "text": "Image Credit link\n\n\nIn this blog we will go through how stable diffusion models work.This Blog is mainly Summary of the Fastai video. We will be using diffusers library by huggingface.\nLets understand the intuition of these.\nLets say we have alot of images. We will add random gaussian noise to the images. Now we have images with somewhat noise. Lets take these images and train a model which extracts the noise we have added.\nNow we have model which given noisy image extract noise and we can have image generated.\n\nAs our model knows to extract somewhat noise , so given so pure noise we can iterate for X steps to the get some tangable output.\n\n\n\nImage Credit link\n\n\nwhy not run it only once?\n\n\n\nOutput for single noise extraction\n\n\nAs you can see from above example.In first iteration it may extract some noise. Again it will be given to extract. This when we do for X steps we get the final output.\nNow instead of random image generated, can we guide the model to generate specfic images? Yes.\nIn the above model, along with noisy image if we also give embedding of text as input to train. The model will understand what to generate. This method is called as Classifier-Free Guidance.\nLets see quick example using huggingface pipeline\n\npipe2 = StableDiffusionPipeline.from_pretrained(\"CompVis/stable-diffusion-v1-4\", revision=\"fp16\", torch_dtype=torch.float16).to(\"cuda\")\n\nprompt = \"a photograph of an astronaut riding a horse\"\n\npipe2(prompt).images[0]\n\nGenerally images are 3d with alot of values. A small 512*512 image will have 786432 values. But from information persepective alot of values don’t add value. So we use VAE. This model compressed image into small dimension, which gives only important value which adds value. This will reduce our inputs which will reduce the computation.\nWe may need to use de compression during output to get proper image.\nWhat are the blocks till now we saw?\n\nModel which extracts noise and outputs less noise image\nModel which embeds the text into embedding.\nModel which compresses and de-compressed images. ( output of these compression models are called as latents)"
@@ -16,15 +16,15 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Blog Posts",
+    "title": "Vishwas Pai",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nOct 29, 2022\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nIntroduction to Stable Diffusion\n\n\n\n\n\n\n\nCV\n\n\n\n\n\n\n\n\n\n\n\nOct 29, 2022\n\n\nVishwas Pai\n\n\n\n\n\n\nNo matching items"
+    "text": "Post With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nOct 29, 2022\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nIntroduction to Stable Diffusion\n\n\n\n\n\n\n\nCV\n\n\n\n\n\n\n\n\n\n\n\n\nOct 29, 2022\n\n\nVishwas Pai\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this blog"
+    "text": "Socials"
   }
 ]
