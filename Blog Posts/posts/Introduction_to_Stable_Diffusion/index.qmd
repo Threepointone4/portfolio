@@ -2,7 +2,7 @@
 title: "Introduction to Stable Diffusion"
 author: "Vishwas Pai"
 date: "2022-10-29"
-categories: [CV]
+categories: [CV,Deep Learning]
 image : stable_diffusion.png
 ---
 
