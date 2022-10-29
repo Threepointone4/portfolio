@@ -1,5 +1,5 @@
 ---
-title: "Blog Posts"
+title: "Vishwas Pai"
 listing:
   contents: posts
   sort: "date desc"
