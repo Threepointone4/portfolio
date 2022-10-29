@@ -86,12 +86,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/vishwasgpai/"><i class="bi bi-linkedin" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://github.com/Threepointone4"><i class="bi bi-github" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
@@ -180,11 +180,11 @@ prompt = "a photograph of an astronaut riding a horse"
 
 pipe2(prompt).images[0]</code></pre>
 <p><img src="astronot.png" class="img-fluid"></p>
-<p>Generally images are 3d with alot of values. A small 512*512 image will have 786432 values. But from information persepective alot of values don’t add value. So we use <strong>VAE</strong>. This model compressed image into small dimension, which gives only important value which adds value. This will reduce our inputs which will reduce the computation.</p>
+<p>Generally images are 3d with alot of values. A small 512*512 image will have 786432 values. But from information persepective alot of values don’t add value. So we use <strong>VAE</strong>. This model compress image into small dimension, which gives only important values which actually adds value. This will reduce our inputs which will reduce the computation.</p>
 <p>We may need to use de compression during output to get proper image.</p>
 <p><strong>What are the blocks till now we saw?</strong></p>
 <ol type="1">
-<li>Model which extracts noise and outputs less noise image</li>
+<li>Model which extracts noise and outputs less noise image.</li>
 <li>Model which embeds the text into embedding.</li>
 <li>Model which compresses and de-compressed images. ( output of these compression models are called as <strong>latents</strong>)</li>
 </ol>
