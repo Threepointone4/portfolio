@@ -7,10 +7,10 @@ website:
   navbar:
     right:
       - about.qmd
+      - icon: linkedin
+        href: https://www.linkedin.com/in/vishwasgpai/
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/Threepointone4
 format:
   html:
     theme: cosmo

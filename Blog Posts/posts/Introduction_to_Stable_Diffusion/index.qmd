@@ -53,13 +53,13 @@ pipe2(prompt).images[0]
  
 
 Generally images are 3d with alot of values. A small 512*512 image will have 786432 values. But from information persepective alot of values don't add value. 
-So we use **VAE**. This model compressed image into small dimension, which gives only important value which adds value. This will reduce our inputs which will reduce the computation.
+So we use **VAE**. This model compress image into small dimension, which gives only important values which actually adds value. This will reduce our inputs which will reduce the computation.
 
 We may need to use de compression during output to get proper image.
 
 **What are the blocks till now we saw?**
 
-1. Model which extracts noise and outputs less noise image
+1. Model which extracts noise and outputs less noise image.
 2. Model which embeds the text into embedding.
 3. Model which compresses and de-compressed images. ( output of these compression models are called as **latents**)
 
