@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Vishwas Pai">
-<meta name="dcterms.date" content="2022-10-31">
+<meta name="dcterms.date" content="2022-10-30">
 
 <title>Blog Posts - Building components of Stable Diffusion</title>
 <style>
@@ -126,7 +126,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">October 31, 2022</p>
+        <p class="date">October 30, 2022</p>
       </div>
     </div>
     
@@ -144,9 +144,65 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>Comming Soon</p>
+<p>In this we will try to build the Stable Diffusion pipeline we saw in <a href="../../posts/Introduction_to_Stable_Diffusion/index.html">previous blog</a>.</p>
+<p>Just a recap ,</p>
+<p><strong>What are the blocks till now we saw?</strong></p>
+<section id="model-which-extracts-noise-and-outputs-less-noise-image." class="level4">
+<h4 class="anchored" data-anchor-id="model-which-extracts-noise-and-outputs-less-noise-image.">1. Model which extracts noise and outputs less noise image.</h4>
+<p>For this we generally use specific type of models called <strong>Unet</strong>.</p>
+<pre><code>unet = UNet2DConditionModel.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="unet").to(DEVICE)</code></pre>
+</section>
+<section id="model-which-embeds-the-text-into-embedding." class="level4">
+<h4 class="anchored" data-anchor-id="model-which-embeds-the-text-into-embedding.">2. Model which embeds the text into embedding.</h4>
+<p>For this we use model called <strong>CLIP</strong>. As we are dealing with text, we need to load tokenizer as well along with the model.</p>
+<pre><code>tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
+text_encoder = CLIPTextModel.from_pretrained("openai/clip-vit-large-patch14").to(DEVICE)</code></pre>
+</section>
+<section id="model-which-compresses-and-de-compressed-images.-output-of-these-compression-models-are-called-as-latents." class="level4">
+<h4 class="anchored" data-anchor-id="model-which-compresses-and-de-compressed-images.-output-of-these-compression-models-are-called-as-latents.">3. Model which compresses and de-compressed images. ( output of these compression models are called as <strong>latents</strong>).</h4>
+<p>The model which are used for this is called as <strong>VAE</strong>. Image compression is used during training. During inference as we are starting from noise, we will not be using VAE.</p>
+<pre><code>vae = AutoencoderKL.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="vae").to(DEVICE)</code></pre>
+<p>Lets understand what happens inside <code>StableDiffusionPipeline</code>.</p>
+<p>Our input will be text (<code>prompt</code>).</p>
+<pre><code>prompt = ["man riding blue bike with red dress"]</code></pre>
+<p>Now we will tokenize and convert it into embedding using CLIP tokenizer and CLIP encoder respectively.</p>
+<pre><code>text_input = tokenizer(prompt, padding="max_length", max_length=tokenizer.model_max_length, truncation=True, return_tensors="pt")
+text_embeddings = text_encoder(text_input.input_ids.to(DEVICE))[0]
+</code></pre>
+<p>Now we need noise also as input. (<code>input latent</code>).</p>
+<p>We will use random weight with proper input shape which is required for Unet model which we have loaded.</p>
+<pre><code>latents = torch.randn((batch_size, unet.in_channels, height // 8, width // 8))
+latents = latents.to(DEVICE)</code></pre>
+<p>Now we have both the inputs, we can give it to Unet to generate output latent. One issue with this is, generally model tends to overfit to the text given. This leads to less creative and more aligned with text outputs.</p>
+<p>So what we do is, generate embedding for empty string and concat with text embedding. The intiution is, we will generate image completly based on input , one more completely creative. We will average both with some condition to get best of both.</p>
+<p><code>final_prediction = creative_predection + guidance_scale * predection_based_on_text</code></p>
+<p>This <strong>guidance_scale</strong> param lets user to control. The smaller value tends to generate more creative and less accurate and the higher value generated accurate but less creative. According to documentation <code>7.5</code> is the best between both.</p>
+<p>Lets code this</p>
+<pre><code>#We will remove noise by X times
+for i, t in enumerate(tqdm(scheduler.timesteps)):
+    # As we generate for both creative and text , we will have 2 noise inputs
+    input = torch.cat([latents] * 2)
+    input = scheduler.scale_model_input(input, t)
+
+    # Given to unet for prediction
+    with torch.no_grad(): 
+        pred = unet(input, t, encoder_hidden_states=text_embeddings).sample
+
+    # perform guidance
+    pred_uncond, pred_text = pred.chunk(2)
+    pred = pred_uncond + guidance_scale * (pred_text - pred_uncond)
+
+    # compute the "previous" noisy sample
+    latents = scheduler.step(pred, t, latents).prev_sample</code></pre>
+<p>Now the last step. We will convert over latent into proper image using <strong>VAE</strong>.</p>
+<pre><code>with torch.no_grad():
+    image = vae.decode(1 / 0.18215 * latents).sample
+</code></pre>
+<p><img src="output.png" class="img-fluid"></p>
+<p>In the next post we will be understanding and building <strong>negetive prompt</strong> in stable diffusion.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
