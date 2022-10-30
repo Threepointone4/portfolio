@@ -64,3 +64,5 @@ We may need to use de compression during output to get proper image.
 3. Model which compresses and de-compressed images. ( output of these compression models are called as **latents**)
 
 ![](sd_architecure.png)
+
+In next blog we will go through components of Stable Diffusion with code. [Next>>](../Building_components_of_Stable_Diffusion/index.qmd)
