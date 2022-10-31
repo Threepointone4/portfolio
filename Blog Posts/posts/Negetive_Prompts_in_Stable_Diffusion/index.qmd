@@ -9,13 +9,14 @@ image : tumbnail.png
 
 In this post we will see how negative prompt work in stable diffusion.
 
-In the Introduction [Blog](../Introduction_to_Stable_Diffusion/index.qmd) we saw the below code snippet, which generates images from the text.
-
 Intuition is lets say `input_text = "man in blue dress"` and this generates a output latent p1.
 Now one more input called `input_text2 = "blue"` and this generates a output latent p2.
 Now at a high level `p1-p2` --> an image of man in **not blue** colour.
 
 Also similar to what we saw in Components of Stable diffusion [blog](../Building_components_of_Stable_Diffusion/index.qmd). We used to generate 2 outputs, one aligned with text and one creative. We used to combine by a logic to get the final output. 
+
+
+In the Introduction [Blog](../Introduction_to_Stable_Diffusion/index.qmd) we saw the below code snippet, which generates images from the text.
 
 ```
 pipe2 = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", revision="fp16", torch_dtype=torch.float16).to("cuda")
