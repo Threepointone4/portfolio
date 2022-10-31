@@ -9,7 +9,7 @@
 <meta name="author" content="Vishwas Pai">
 <meta name="dcterms.date" content="2022-10-31">
 
-<title>Blog Posts - Negetive Prompts in Stable Diffusion</title>
+<title>Blog Posts - Negative Prompts in Stable Diffusion</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -105,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Negetive Prompts in Stable Diffusion</h1>
+      <h1 class="title">Negative Prompts in Stable Diffusion</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">CV</div>
                 <div class="quarto-category">Deep Learning</div>
@@ -144,7 +144,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>In this post we will see how negetive prompt work in stable diffusion.</p>
+<p>In this post we will see how negative prompt work in stable diffusion.</p>
 <p>In the Introduction <a href="../../posts/Introduction_to_Stable_Diffusion/index.html">Blog</a> we saw the below code snippet, which generates images from the text.</p>
 <p>Intuition is lets say <code>input_text = "man in blue dress"</code> and this generates a output latent p1. Now one more input called <code>input_text2 = "blue"</code> and this generates a output latent p2. Now at a high level <code>p1-p2</code> –&gt; an image of man in <strong>not blue</strong> colour.</p>
 <p>Also similar to what we saw in Components of Stable diffusion <a href="../../posts/Building_components_of_Stable_Diffusion/index.html">blog</a>. We used to generate 2 outputs, one aligned with text and one creative. We used to combine by a logic to get the final output.</p>
@@ -159,29 +159,29 @@ pipe2(prompt).images[0]</code></pre>
 prompt = "man riding blue bike with red dress"
 pipe2(prompt).images[0]</code></pre>
 <p><img src="p1.png" class="img-fluid"></p>
-<p>Now lets change the color of bike with negetive prompt <code>blue</code>.</p>
+<p>Now lets change the color of bike with negative prompt <code>blue</code>.</p>
 <pre><code>torch.manual_seed(1000)
 pipe2(prompt, negative_prompt="blue").images[0]
 </code></pre>
 <p><img src="p2.png" class="img-fluid"></p>
 <p>As you can see both blue bike and blue pant has been changed.</p>
-<p>Lets change the shirt color using negetive prompt <code>red</code>.</p>
+<p>Lets change the shirt color using negative prompt <code>red</code>.</p>
 <p><img src="p3.png" class="img-fluid"></p>
-<p>Let change from riding to something else using negetive prompt <code>riding</code>.</p>
+<p>Let change from riding to something else using negative prompt <code>riding</code>.</p>
 <p><img src="p4.png" class="img-fluid"></p>
-<p>Now lets change the vehicle using negetive prompt <code>cycle</code>.</p>
+<p>Now lets change the vehicle using negative prompt <code>cycle</code>.</p>
 <p><img src="p5.png" class="img-fluid"></p>
-<p>Now lets change the vehicle and the colour also using negetive prompt <code>blue cycle</code>.</p>
+<p>Now lets change the vehicle and the colour also using negative prompt <code>blue cycle</code>.</p>
 <p><img src="p6.png" class="img-fluid"></p>
-<p>Lets give completely opposite of what input prompt given and we will see what the output looks like. negetive prompt <code>man riding blue bike</code>.</p>
+<p>Lets give completely opposite of what input prompt given and we will see what the output looks like. negative prompt <code>man riding blue bike</code>.</p>
 <p><img src="p7.png" class="img-fluid"></p>
-<p>As we can see <code>p1 = man riding blue bike with red dress</code> and negetive prompt <code>man riding blue bike</code>. Yielded <strong>girl in red dress</strong>.</p>
+<p>As we can see <code>p1 = man riding blue bike with red dress</code> and negative prompt <code>man riding blue bike</code>. Yielded <strong>girl in red dress</strong>.</p>
 <p>How this works?</p>
 <p>We saw in Previous <a href="../Building_components_of_Stable_Diffusion/">post</a> a method for generating good image using <strong>guidance_scale</strong>.</p>
 <p>The equation was :</p>
 <p><code>final_prediction = creative_predection + guidance_scale * predection_based_on_text</code></p>
 <p>Now lets add <strong>negative_prompt</strong> to this equation.</p>
-<p><code>final_prediction = creative_predection + guidance_scale * (predection_based_on_text - predection_based_on_negetive_text)</code></p>
+<p><code>final_prediction = creative_predection + guidance_scale * (predection_based_on_text - predection_based_on_negative_text)</code></p>
 <p>So all the codes from previous post will be same. Now instead of 2 latents noise , we will doing 3.</p>
 <pre><code>#We will remove noise by X times
 for i, t in enumerate(tqdm(scheduler.timesteps)):
