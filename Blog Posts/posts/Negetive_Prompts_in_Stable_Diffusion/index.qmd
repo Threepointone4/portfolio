@@ -1,0 +1,106 @@
+---
+title: "Negetive Prompts in Stable Diffusion"
+author: "Vishwas Pai"
+date: "2022-10-31"
+categories: [CV,Deep Learning]
+image : tumbnail.png
+---
+
+
+In this post we will see how negetive prompt work in stable diffusion.
+
+In the Introduction [Blog](../Introduction_to_Stable_Diffusion/index.qmd) we saw the below code snippet, which generates images from the text.
+
+Intuition is lets say `input_text = "man in blue dress"` and this generates a output latent p1.
+Now one more input called `input_text2 = "blue"` and this generates a output latent p2.
+Now at a high level `p1-p2` --> an image of man in **not blue** colour.
+
+Also similar to what we saw in Components of Stable diffusion [blog](../Building_components_of_Stable_Diffusion/index.qmd). We used to generate 2 outputs, one aligned with text and one creative. We used to combine by a logic to get the final output. 
+
+```
+pipe2 = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", revision="fp16", torch_dtype=torch.float16).to("cuda")
+
+prompt = "a photograph of an astronaut riding a horse"
+
+pipe2(prompt).images[0]
+```
+
+The above `pipe2` along with prompt also accept a param called **negative_prompt**.
+
+Lets see some examples and see how good these works.
+
+```
+torch.manual_seed(1000)
+prompt = "man riding blue bike with red dress"
+pipe2(prompt).images[0]
+```
+
+![](p1.png)
+
+Now lets change the color of bike with negetive prompt `blue`.
+
+```
+torch.manual_seed(1000)
+pipe2(prompt, negative_prompt="blue").images[0]
+
+```
+![](p2.png)
+
+As you can see both blue bike and blue pant has been changed.
+
+Lets change the shirt color using negetive prompt `red`.
+
+![](p3.png)
+
+Let change from riding to something else using negetive prompt `riding`.
+
+![](p4.png)
+
+Now lets change the vehicle using negetive prompt `cycle`.
+
+![](p5.png)
+
+
+Now lets change the vehicle and the colour also using negetive prompt `blue cycle`.
+
+![](p6.png)
+
+Lets give completely opposite of what input prompt given and we will see what the output looks like.  negetive prompt `man riding blue bike`.
+
+![](p7.png)
+
+As we can see `p1 = man riding blue bike with red dress` and negetive prompt `man riding blue bike`. Yielded **girl in red dress**.
+
+How this works? 
+
+We saw in Previous [post](../Building_components_of_Stable_Diffusion/) a method for generating good image using **guidance_scale**. 
+
+The equation was : 
+
+`final_prediction = creative_predection + guidance_scale * predection_based_on_text`
+
+Now lets add **negative_prompt** to this equation.
+
+`final_prediction = creative_predection + guidance_scale * (predection_based_on_text - predection_based_on_negetive_text)`
+
+So all the codes from previous post will be same. Now instead of 2 latents noise , we will doing 3.
+
+```
+#We will remove noise by X times
+for i, t in enumerate(tqdm(scheduler.timesteps)):
+    # As we generate for both creative and text , we will have 3 noise inputs
+    input = torch.cat([latents] * 3)
+    input = scheduler.scale_model_input(input, t)
+
+    # Given to unet for prediction
+    with torch.no_grad(): 
+        pred = unet(input, t, encoder_hidden_states=text_embeddings).sample
+
+    # perform guidance
+    pred_uncond, pred_text, pred_neg = pred.chunk(3)
+    pred = pred_uncond + guidance_scale * (pred_text - pred_neg)
+
+    # compute the "previous" noisy sample
+    latents = scheduler.step(pred, t, latents).prev_sample
+```
+
