@@ -1,5 +1,5 @@
 ---
-title: "Negetive Prompts in Stable Diffusion"
+title: "Negative Prompts in Stable Diffusion"
 author: "Vishwas Pai"
 date: "2022-10-31"
 categories: [CV,Deep Learning]
@@ -7,7 +7,7 @@ image : tumbnail.png
 ---
 
 
-In this post we will see how negetive prompt work in stable diffusion.
+In this post we will see how negative prompt work in stable diffusion.
 
 In the Introduction [Blog](../Introduction_to_Stable_Diffusion/index.qmd) we saw the below code snippet, which generates images from the text.
 
@@ -37,7 +37,7 @@ pipe2(prompt).images[0]
 
 ![](p1.png)
 
-Now lets change the color of bike with negetive prompt `blue`.
+Now lets change the color of bike with negative prompt `blue`.
 
 ```
 torch.manual_seed(1000)
@@ -48,28 +48,28 @@ pipe2(prompt, negative_prompt="blue").images[0]
 
 As you can see both blue bike and blue pant has been changed.
 
-Lets change the shirt color using negetive prompt `red`.
+Lets change the shirt color using negative prompt `red`.
 
 ![](p3.png)
 
-Let change from riding to something else using negetive prompt `riding`.
+Let change from riding to something else using negative prompt `riding`.
 
 ![](p4.png)
 
-Now lets change the vehicle using negetive prompt `cycle`.
+Now lets change the vehicle using negative prompt `cycle`.
 
 ![](p5.png)
 
 
-Now lets change the vehicle and the colour also using negetive prompt `blue cycle`.
+Now lets change the vehicle and the colour also using negative prompt `blue cycle`.
 
 ![](p6.png)
 
-Lets give completely opposite of what input prompt given and we will see what the output looks like.  negetive prompt `man riding blue bike`.
+Lets give completely opposite of what input prompt given and we will see what the output looks like.  negative prompt `man riding blue bike`.
 
 ![](p7.png)
 
-As we can see `p1 = man riding blue bike with red dress` and negetive prompt `man riding blue bike`. Yielded **girl in red dress**.
+As we can see `p1 = man riding blue bike with red dress` and negative prompt `man riding blue bike`. Yielded **girl in red dress**.
 
 How this works? 
 
@@ -81,7 +81,7 @@ The equation was :
 
 Now lets add **negative_prompt** to this equation.
 
-`final_prediction = creative_predection + guidance_scale * (predection_based_on_text - predection_based_on_negetive_text)`
+`final_prediction = creative_predection + guidance_scale * (predection_based_on_text - predection_based_on_negative_text)`
 
 So all the codes from previous post will be same. Now instead of 2 latents noise , we will doing 3.
 
