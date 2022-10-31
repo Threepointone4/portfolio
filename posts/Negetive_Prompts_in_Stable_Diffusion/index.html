@@ -145,9 +145,9 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>In this post we will see how negative prompt work in stable diffusion.</p>
-<p>In the Introduction <a href="../../posts/Introduction_to_Stable_Diffusion/index.html">Blog</a> we saw the below code snippet, which generates images from the text.</p>
 <p>Intuition is lets say <code>input_text = "man in blue dress"</code> and this generates a output latent p1. Now one more input called <code>input_text2 = "blue"</code> and this generates a output latent p2. Now at a high level <code>p1-p2</code> –&gt; an image of man in <strong>not blue</strong> colour.</p>
 <p>Also similar to what we saw in Components of Stable diffusion <a href="../../posts/Building_components_of_Stable_Diffusion/index.html">blog</a>. We used to generate 2 outputs, one aligned with text and one creative. We used to combine by a logic to get the final output.</p>
+<p>In the Introduction <a href="../../posts/Introduction_to_Stable_Diffusion/index.html">Blog</a> we saw the below code snippet, which generates images from the text.</p>
 <pre><code>pipe2 = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", revision="fp16", torch_dtype=torch.float16).to("cuda")
 
 prompt = "a photograph of an astronaut riding a horse"
