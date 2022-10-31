@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Negetive_Prompts_in_Stable_Diffusion/index.html",
       "/posts/Building_components_of_Stable_Diffusion/index.html",
       "/posts/Introduction_to_Stable_Diffusion/index.html"
     ]
